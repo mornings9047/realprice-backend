@@ -1,6 +1,5 @@
 package com.yourssu.realprice.service.function
 
-import com.yourssu.realprice.exception.RecordNotExistsException
 import com.yourssu.realprice.model.Product
 import com.yourssu.realprice.model.Record
 import com.yourssu.realprice.model.URLBuilder
@@ -18,11 +17,14 @@ import java.nio.charset.StandardCharsets
 @Component
 class RegisterRecordFunction @Autowired constructor(val productService: ProductService) {
 
-    fun getRecord(keyword: String, date: String): Record {
+    fun getRecord(keyword: String, date: String): Record? {
         val product = productService.findProduct(keyword)
         val jsonObject = JSONParser().parse(readURL(product, date)) as JSONObject
-        if (jsonObject.toJSONString().contains("001"))
-            throw RecordNotExistsException(date)
+        if (jsonObject.toJSONString().contains("001")) {
+            println("$keyword doesn't exist on $date in api")
+            return null
+            // throw RecordNotExistsException(keyword, date)
+        }
         val jsonData = jsonObject["data"] as JSONObject
         val jsonItem = jsonData["item"] as JSONArray
 
@@ -38,7 +40,7 @@ class RegisterRecordFunction @Autowired constructor(val productService: ProductS
     }
 
     fun readURL(product: Product, date: String): String {
-        val buffer = StringBuilder()
+        val buffer = StringBuffer()
         val url = URL(URLBuilder(product, date).build())
         BufferedReader(InputStreamReader(url.openStream(), StandardCharsets.UTF_8)).use {
             return buffer.append(it.readLine()).toString()

@@ -16,12 +16,24 @@ class RecordController @Autowired constructor(val productService: ProductService
     @PostMapping("/{keyword}/{date}")
     @ResponseStatus(HttpStatus.CREATED)
     fun registerNewRecord(@PathVariable keyword: String, @PathVariable date: String) {
-        recordService.registerRecord(keyword, date)
+        recordService.registerRecord(keyword, date, date)
     }
 
-    @GetMapping("/{keyword}")
+    @PostMapping("/{keyword}/{startday}/{endday}")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun registerNewRecordFromStartToEnd(@PathVariable keyword: String, @PathVariable("startday") startDay: String, @PathVariable("endday") endDay: String) {
+        recordService.registerRecord(keyword, startDay, endDay)
+    }
+
+    @GetMapping("/week/{keyword}")
     @ResponseStatus(HttpStatus.OK)
-    fun getData(@PathVariable keyword: String) {
+    fun getRecordsForWeek(@PathVariable keyword: String) {
+
+    }
+
+    @GetMapping("/month/{keyword}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getRecordsForMonth(@PathVariable keyword: String) {
 
     }
 
