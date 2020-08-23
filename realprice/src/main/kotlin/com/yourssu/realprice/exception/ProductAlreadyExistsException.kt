@@ -1,3 +1,3 @@
 package com.yourssu.realprice.exception
 
-class ProductAlreadyExistsException(msg: String = "Product already exists") : RuntimeException(msg)
+class ProductAlreadyExistsException(product: String, msg: String = "$product already exists") : RuntimeException(msg)

@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets
 @Component
 class RegisterRecordFunction @Autowired constructor(val productService: ProductService) {
 
-    fun getRecord(keyword: String, date: String): Record? {
+    fun getRecordFromApi(keyword: String, date: String): Record? {
         val product = productService.findProduct(keyword)
         val jsonObject = JSONParser().parse(readURL(product, date)) as JSONObject
         if (jsonObject.toJSONString().contains("001")) {

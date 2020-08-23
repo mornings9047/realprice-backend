@@ -19,12 +19,12 @@ class ProductService @Autowired constructor(val productRepository: ProductReposi
                 p_kindcode = productCreateRequestDto.p_kindcode
         )
         if (productRepository.existsByName(product.name))
-            throw ProductAlreadyExistsException()
+            throw ProductAlreadyExistsException(product.name)
         productRepository.save(product)
     }
 
     fun findProduct(keyword: String): Product {
-        return productRepository.findByName(keyword).orElseThrow { ProductNotExistsException() }
+        return productRepository.findByName(keyword).orElseThrow { ProductNotExistsException(keyword) }
     }
 
 }

@@ -4,6 +4,7 @@ import com.yourssu.realprice.dto.request.ProductCreateRequestDto
 import com.yourssu.realprice.model.Product
 import com.yourssu.realprice.model.URLBuilder
 import com.yourssu.realprice.service.ProductService
+import io.swagger.annotations.ApiOperation
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
@@ -21,6 +22,7 @@ import java.time.LocalDateTime
 @RequestMapping("/product")
 class ProductController @Autowired constructor(val productService: ProductService) {
 
+    @ApiOperation("품목 정보 저장하기")
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     fun registerNewProduct(@RequestBody productCreateRequestDto: ProductCreateRequestDto) {
