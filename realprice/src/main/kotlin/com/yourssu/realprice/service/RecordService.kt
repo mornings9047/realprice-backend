@@ -1,8 +1,11 @@
 package com.yourssu.realprice.service
 
+import com.yourssu.realprice.dto.response.MonthRecordsResponseDto
 import com.yourssu.realprice.dto.response.TodayRecordResponseDto
+import com.yourssu.realprice.dto.response.WeekRecordsResponseDto
 import com.yourssu.realprice.exception.ProductNotExistsException
 import com.yourssu.realprice.exception.RecordNotExistsException
+import com.yourssu.realprice.model.Record
 import com.yourssu.realprice.repository.ProductRepository
 import com.yourssu.realprice.repository.RecordRepository
 import com.yourssu.realprice.service.function.PriceDifferenceFunction
@@ -67,33 +70,20 @@ class RecordService @Autowired constructor(val registerRecordFunction: RegisterR
                 },
                 diff = priceDifferenceFunction.getDiff(todayRecord, yesterdayRecord)
         )
-
-//        val date = LocalDate.now()
-//        val today = LocalDate.parse(date.toString(), DateTimeFormatter.ISO_DATE).toString()
-//        val yesterday = LocalDate.parse(date.minusDays(1).toString(), DateTimeFormatter.ISO_DATE).toString()
-//        val todayRecord = recordRepository.findByKindnameContainingAndDate(keyword, today).orElseThrow { RecordNotExistsException(keyword, today) }
-//        val yesterdayRecord = recordRepository.findByKindnameContainingAndDate(keyword, yesterday).orElseThrow { RecordNotExistsException(keyword, yesterday) }
-//
-//        return TodayRecordResponseDto(
-//                kindname = todayRecord.kindname,
-//                price = todayRecord.price,
-//                isExpensive = when {
-//                    todayRecord.price > yesterdayRecord.price -> 1
-//                    todayRecord.price == yesterdayRecord.price -> 0
-//                    else -> -1
-//                },
-//                diff = priceDifferenceFunction.getDiff(todayRecord, yesterdayRecord)
-//        )
     }
 
-    fun getWeekRecords(keyword: String) {
+    fun getWeekRecords(keyword: String): List<WeekRecordsResponseDto> {
         val product = productRepository.findByName(keyword).orElseThrow { ProductNotExistsException(keyword) }
-
+        val weekRecords = recordRepository.findTop7ByProductIdOrderByDateDesc(product.id!!)
+        return weekRecords.asReversed().map { WeekRecordsResponseDto(it) }
     }
 
-    fun getMonthRecords(keyword: String) {
+    fun getMonthRecords(keyword: String): List<MonthRecordsResponseDto> {
         val product = productRepository.findByName(keyword).orElseThrow { ProductNotExistsException(keyword) }
-
+        val records = recordRepository.findTop31ByProductIdOrderByDateDesc(product.id!!)
+        val monthRecords = mutableListOf<Record>()
+        for (i in 0 until 31 step 5)
+            monthRecords.add(records[i])
+        return monthRecords.asReversed().map { MonthRecordsResponseDto(it) }
     }
-
 }

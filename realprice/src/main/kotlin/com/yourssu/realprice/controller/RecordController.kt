@@ -1,9 +1,9 @@
 package com.yourssu.realprice.controller
 
+import com.yourssu.realprice.dto.response.MonthRecordsResponseDto
 import com.yourssu.realprice.dto.response.TodayRecordResponseDto
-import com.yourssu.realprice.service.ProductService
+import com.yourssu.realprice.dto.response.WeekRecordsResponseDto
 import com.yourssu.realprice.service.RecordService
-import com.yourssu.realprice.service.function.RegisterRecordFunction
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/record")
-class RecordController @Autowired constructor(val productService: ProductService,
-                                              val recordService: RecordService) {
+class RecordController @Autowired constructor(val recordService: RecordService) {
     @ApiOperation("기간 사이에 올라온 품목 가격 추가하기")
     @PostMapping("/{keyword}/{startday}/{endday}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -34,18 +33,17 @@ class RecordController @Autowired constructor(val productService: ProductService
         return recordService.getTodayRecordCompareWithYesterday(keyword)
     }
 
-    @ApiOperation("지난 일주일 가격 가져오기")
+    @ApiOperation("지난 일주일 동안의 품목 가격 가져오기")
     @GetMapping("/week/{keyword}")
     @ResponseStatus(HttpStatus.OK)
-    fun getWeekRecords(@PathVariable keyword: String) {
-        recordService.getWeekRecords(keyword)
+    fun getWeekRecords(@PathVariable keyword: String): List<WeekRecordsResponseDto> {
+        return recordService.getWeekRecords(keyword)
     }
 
-    @ApiOperation("지난 한 달 가격 가져오기")
+    @ApiOperation("지난 한 달 동안의 품목 가격 가져오기")
     @GetMapping("/month/{keyword}")
     @ResponseStatus(HttpStatus.OK)
-    fun getMonthRecords(@PathVariable keyword: String) {
-        recordService.getMonthRecords(keyword)
+    fun getMonthRecords(@PathVariable keyword: String): List<MonthRecordsResponseDto> {
+        return recordService.getMonthRecords(keyword)
     }
-
 }
