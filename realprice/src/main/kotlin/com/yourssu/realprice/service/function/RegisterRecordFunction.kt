@@ -3,6 +3,7 @@ package com.yourssu.realprice.service.function
 import com.yourssu.realprice.model.Product
 import com.yourssu.realprice.model.Record
 import com.yourssu.realprice.model.URLBuilder
+import com.yourssu.realprice.repository.RecordRepository
 import com.yourssu.realprice.service.ProductService
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
@@ -15,21 +16,29 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 
 @Component
-class RegisterRecordFunction @Autowired constructor(val productService: ProductService) {
-
+class RegisterRecordFunction @Autowired constructor(val recordRepository: RecordRepository,
+                                                    val productService: ProductService) {
     fun getRecordFromApi(keyword: String, date: String): Record? {
         val product = productService.findProduct(keyword)
         val jsonObject = JSONParser().parse(readURL(product, date)) as JSONObject
         if (jsonObject.toJSONString().contains("001")) {
-            println("$keyword doesn't exist on $date in api")
-            return null
-            // throw RecordNotExistsException(keyword, date)
+            val prevRecord = recordRepository.findTop1ByProductIdOrderByDateDesc(product.id!!)
+            return if (prevRecord.isPresent) {
+                val record = prevRecord.get()
+                Record(
+                        kindname = record.kindname,
+                        price = record.price,
+                        date = date,
+                        product = product
+                )
+            } else
+                null
         }
+
         val jsonData = jsonObject["data"] as JSONObject
         val jsonItem = jsonData["item"] as JSONArray
-
         val record = jsonItem[jsonItem.size - 1] as JSONObject
-        val kindname = record["kindname"].toString()
+        val kindname = product.name + "(" + record["kindname"].toString().substringAfter("(")
         val price = record["price"].toString()
         return Record(
                 kindname = kindname,
@@ -46,5 +55,4 @@ class RegisterRecordFunction @Autowired constructor(val productService: ProductS
             return buffer.append(it.readLine()).toString()
         }
     }
-
 }

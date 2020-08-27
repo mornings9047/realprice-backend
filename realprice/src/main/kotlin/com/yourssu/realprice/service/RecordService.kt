@@ -13,7 +13,6 @@ import com.yourssu.realprice.service.function.RegisterRecordFunction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.time.Period
 import java.time.format.DateTimeFormatter
 
 
@@ -22,33 +21,22 @@ class RecordService @Autowired constructor(val registerRecordFunction: RegisterR
                                            val priceDifferenceFunction: PriceDifferenceFunction,
                                            val recordRepository: RecordRepository,
                                            val productRepository: ProductRepository) {
+    fun registerAllRecords(startDay: String, endDay: String) {
+        for (product in productRepository.findAll())
+            registerRecord(product.name, startDay, endDay)
+    }
+
     fun registerRecord(keyword: String, startDay: String, endDay: String) {
         val start = LocalDate.parse(startDay, DateTimeFormatter.ISO_DATE)
         val end = LocalDate.parse(endDay, DateTimeFormatter.ISO_DATE)
-        val period = Period.between(start, end)
-        for (i in 0 until period.days + 1) {
+        val days = end.dayOfYear - start.dayOfYear
+        for (i in 0 until days + 1) {
             val date = start.plusDays(i.toLong()).toString()
             if (recordRepository.findByKindnameContainingAndDate(keyword, date).isPresent)
                 continue
             val record = registerRecordFunction.getRecordFromApi(keyword, date)
             if (record != null)
                 recordRepository.save(record)
-        }
-    }
-
-    fun registerAllRecords(startDay: String, endDay: String) {
-        val start = LocalDate.parse(startDay, DateTimeFormatter.ISO_DATE)
-        val end = LocalDate.parse(endDay, DateTimeFormatter.ISO_DATE)
-        val period = Period.between(start, end)
-        for (product in productRepository.findAll()) {
-            for (i in 0 until period.days + 1) {
-                val date = start.plusDays(i.toLong()).toString()
-                if (recordRepository.findByKindnameContainingAndDate(product.name, date).isPresent)
-                    continue
-                val record = registerRecordFunction.getRecordFromApi(product.name, date)
-                if (record != null)
-                    recordRepository.save(record)
-            }
         }
     }
 
@@ -63,11 +51,7 @@ class RecordService @Autowired constructor(val registerRecordFunction: RegisterR
         return TodayRecordResponseDto(
                 kindname = todayRecord.kindname,
                 price = todayRecord.price,
-                isExpensive = when {
-                    todayRecord.price > yesterdayRecord.price -> 1
-                    todayRecord.price == yesterdayRecord.price -> 0
-                    else -> -1
-                },
+                isExpensive = todayRecord.price >= yesterdayRecord.price,
                 diff = priceDifferenceFunction.getDiff(todayRecord, yesterdayRecord)
         )
     }

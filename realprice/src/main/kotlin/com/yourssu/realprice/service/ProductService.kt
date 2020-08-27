@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class ProductService @Autowired constructor(val productRepository: ProductRepository) {
-
     fun registerProduct(productCreateRequestDto: ProductCreateRequestDto) {
         val product = Product(
                 name = productCreateRequestDto.name,
@@ -26,5 +25,4 @@ class ProductService @Autowired constructor(val productRepository: ProductReposi
     fun findProduct(keyword: String): Product {
         return productRepository.findByName(keyword).orElseThrow { ProductNotExistsException(keyword) }
     }
-
 }

@@ -15,7 +15,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @Configuration
 @EnableSwagger2
 class SwaggerConfig : WebMvcConfigurationSupport() {
-
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
                 .title("Real-Price")
@@ -29,7 +28,7 @@ class SwaggerConfig : WebMvcConfigurationSupport() {
                 .groupName("Real-Price")
                 .apiInfo(this.apiInfo())
                 .select()
-                .paths(PathSelectors.ant("/**"))
+                .paths(PathSelectors.ant("/record/**"))
                 .apis(RequestHandlerSelectors.basePackage("com.yourssu.realprice.controller"))
                 .build()
     }
@@ -39,5 +38,4 @@ class SwaggerConfig : WebMvcConfigurationSupport() {
         registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/")
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/")
     }
-
 }
