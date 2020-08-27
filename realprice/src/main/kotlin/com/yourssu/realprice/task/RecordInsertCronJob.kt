@@ -4,7 +4,6 @@ import com.yourssu.realprice.service.RecordService
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.quartz.InterruptableJob
-import org.quartz.JobDataMap
 import org.quartz.JobExecutionContext
 import org.quartz.JobKey
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,17 +22,15 @@ class RecordInsertCronJob : QuartzJobBean(), InterruptableJob {
 
     override fun executeInternal(context: JobExecutionContext) {
         jobKey = context.jobDetail.key
-        log.info("RecordInsertCronJob executeInternal invoked, jobKey: $jobKey, time: ${LocalDate.now()}")
+        log.info("Date: ${LocalDate.now()} / Inserting Records Starts...")
         if (isInterrupted) {
             log.info("jobKey: $jobKey is interrupted")
             return
         }
-        val jobDataMap: JobDataMap = context.jobDetail.jobDataMap
         val today = LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ISO_DATE).toString()
         recordService.registerAllRecords(today, today)
     }
 
-    // InterruptableJob
     override fun interrupt() {
         log.info("$jobKey -- INTERTUPTING --")
         isInterrupted = true

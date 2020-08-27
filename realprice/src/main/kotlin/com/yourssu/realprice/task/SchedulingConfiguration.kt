@@ -21,9 +21,8 @@ class SchedulingConfiguration {
         try {
             val jobDetail: JobDetail = buildJobDetail(
                     RecordInsertCronJob::class.java,
-                    name = "RecordInsertingJob",
-                    desc = "새로운 가격 정보 저장",
-                    params = HashMap<String, Any>()
+                    name = "Inserting Records",
+                    desc = "새로운 가격 정보 저장"
             )
 
             if (scheduler.checkExists(jobDetail.key))
@@ -31,7 +30,7 @@ class SchedulingConfiguration {
 
             scheduler.scheduleJob(
                     jobDetail,
-                    buildCronJobTrigger("0 0/1 * * * ?")
+                    buildCronJobTrigger("0 30 14 * * ?")
             )
         } catch (e: SchedulerException) {
             e.printStackTrace()
@@ -44,18 +43,8 @@ class SchedulingConfiguration {
                 .build()
     }
 
-    fun buildSimpleJobTrigger(hour: Int): Trigger {
-        return TriggerBuilder.newTrigger()
-                .withSchedule(SimpleScheduleBuilder
-                        .simpleSchedule()
-                        .repeatForever()
-                        .withIntervalInHours(hour))
-                .build()
-    }
-
-    fun buildJobDetail(job: Class<RecordInsertCronJob>, name: String?, desc: String?, params: Map<*, *>): JobDetail {
+    fun buildJobDetail(job: Class<RecordInsertCronJob>, name: String?, desc: String?/*, params: Map<*, *>*/): JobDetail {
         val jobDataMap = JobDataMap()
-        jobDataMap.putAll(params as Map<out String, Any>)
         return JobBuilder
                 .newJob(job)
                 .withIdentity(name)

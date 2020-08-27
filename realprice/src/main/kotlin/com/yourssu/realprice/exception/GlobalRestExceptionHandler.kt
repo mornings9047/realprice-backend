@@ -8,17 +8,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GlobalRestExceptionHandler {
-
     @ExceptionHandler(value = [ProductAlreadyExistsException::class])
     @ResponseStatus(HttpStatus.CONFLICT)
     fun conflictException(e: Exception): ResponseEntity<String> {
         return ResponseEntity(e.message, HttpStatus.CONFLICT)
     }
 
-    @ExceptionHandler(value = [ProductNotExistsException::class, RecordNotExistsException::class])
+    @ExceptionHandler(value = [ProductNotExistsException::class, RecordNotExistsException::class, PrevRecordNotExistsException::class])
     @ResponseStatus(HttpStatus.NOT_FOUND)
     fun notFoundException(e: Exception): ResponseEntity<String> {
         return ResponseEntity(e.message, HttpStatus.NOT_FOUND)
     }
-
 }
