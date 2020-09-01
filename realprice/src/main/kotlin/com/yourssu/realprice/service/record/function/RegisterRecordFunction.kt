@@ -1,10 +1,11 @@
-package com.yourssu.realprice.service.function
+package com.yourssu.realprice.service.record.function
 
+import com.yourssu.realprice.exception.ProductNotExistsException
 import com.yourssu.realprice.model.Product
 import com.yourssu.realprice.model.Record
 import com.yourssu.realprice.model.URLBuilder
+import com.yourssu.realprice.repository.ProductRepository
 import com.yourssu.realprice.repository.RecordRepository
-import com.yourssu.realprice.service.ProductService
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
@@ -16,10 +17,10 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 
 @Component
-class RegisterRecordFunction @Autowired constructor(val recordRepository: RecordRepository,
-                                                    val productService: ProductService) {
+class RegisterRecordFunction @Autowired constructor(val productRepository: ProductRepository,
+                                                    val recordRepository: RecordRepository) {
     fun getRecordFromApi(keyword: String, date: String): Record? {
-        val product = productService.findProduct(keyword)
+        val product = productRepository.findByName(keyword).orElseThrow { ProductNotExistsException(keyword) }
         val jsonObject = JSONParser().parse(readURL(product, date)) as JSONObject
         if (jsonObject.toJSONString().contains("001")) {
             val prevRecord = recordRepository.findTop1ByProductIdOrderByDateDesc(product.id!!)

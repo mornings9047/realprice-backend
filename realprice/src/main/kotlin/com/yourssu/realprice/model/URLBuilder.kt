@@ -13,7 +13,7 @@ class URLBuilder(
     var p_itemcategorycode = product.p_itemcategorycode
     var p_itemcode = product.p_itemcode
     var p_kindcode = product.p_kindcode
-    val p_productrankcode = "05"
+    val p_productrankcode = product.p_productrankcode
     val p_countrycode = "1101"
     val p_convert_kg_yn = "N"
     private val p_cert_key = "7a5a147c-4735-41b4-b530-91137f6c5b51"

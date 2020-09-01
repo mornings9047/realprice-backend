@@ -1,4 +1,4 @@
-package com.yourssu.realprice.service
+package com.yourssu.realprice.service.record
 
 import com.yourssu.realprice.dto.response.MonthRecordsResponseDto
 import com.yourssu.realprice.dto.response.TodayRecordResponseDto
@@ -8,8 +8,8 @@ import com.yourssu.realprice.exception.RecordNotExistsException
 import com.yourssu.realprice.model.Record
 import com.yourssu.realprice.repository.ProductRepository
 import com.yourssu.realprice.repository.RecordRepository
-import com.yourssu.realprice.service.function.PriceDifferenceFunction
-import com.yourssu.realprice.service.function.RegisterRecordFunction
+import com.yourssu.realprice.service.record.function.PriceDifferenceFunction
+import com.yourssu.realprice.service.record.function.RegisterRecordFunction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -40,6 +40,10 @@ class RecordService @Autowired constructor(val registerRecordFunction: RegisterR
         }
     }
 
+    fun findRecentRecords(productId: Long): List<Record> {
+        return recordRepository.findTop2ByProductIdOrderByDateDesc(productId)
+    }
+
     fun getTodayRecordCompareWithYesterday(keyword: String): TodayRecordResponseDto {
         val product = productRepository.findByName(keyword).orElseThrow { ProductNotExistsException(keyword) }
         val records = recordRepository.findTop2ByProductIdOrderByDateDesc(product.id!!)
@@ -51,7 +55,7 @@ class RecordService @Autowired constructor(val registerRecordFunction: RegisterR
         return TodayRecordResponseDto(
                 kindname = todayRecord.kindname,
                 price = todayRecord.price,
-                isExpensive = todayRecord.price >= yesterdayRecord.price,
+                riseOrFall = todayRecord.price >= yesterdayRecord.price,
                 diff = priceDifferenceFunction.getDiff(todayRecord, yesterdayRecord)
         )
     }

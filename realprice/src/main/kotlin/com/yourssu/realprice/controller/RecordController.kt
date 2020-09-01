@@ -3,7 +3,7 @@ package com.yourssu.realprice.controller
 import com.yourssu.realprice.dto.response.MonthRecordsResponseDto
 import com.yourssu.realprice.dto.response.TodayRecordResponseDto
 import com.yourssu.realprice.dto.response.WeekRecordsResponseDto
-import com.yourssu.realprice.service.RecordService
+import com.yourssu.realprice.service.record.RecordService
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
