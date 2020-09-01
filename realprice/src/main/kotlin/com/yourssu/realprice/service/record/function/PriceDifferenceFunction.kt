@@ -1,4 +1,4 @@
-package com.yourssu.realprice.service.function
+package com.yourssu.realprice.service.record.function
 
 import com.yourssu.realprice.model.Record
 import org.springframework.stereotype.Component

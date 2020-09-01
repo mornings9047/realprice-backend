@@ -9,4 +9,5 @@ import java.util.*
 interface ProductRepository : JpaRepository<Product, Long> {
     fun findByName(keyword: String): Optional<Product>
     fun existsByName(name: String): Boolean
+    fun findByCategory(category: Int): List<Product>
 }

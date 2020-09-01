@@ -1,6 +1,6 @@
 package com.yourssu.realprice.task
 
-import com.yourssu.realprice.service.RecordService
+import com.yourssu.realprice.service.record.RecordService
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.quartz.InterruptableJob

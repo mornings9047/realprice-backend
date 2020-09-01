@@ -9,8 +9,8 @@ class TodayRecordResponseDto(
         val kindname: String,
         @ApiModelProperty("오늘의 가격")
         val price: String,
-        @ApiModelProperty("등락여부(가격이 같거나 비싸면 1, 아니면 0)")
-        val isExpensive: Boolean,
+        @ApiModelProperty("등락여부(가격이 비싸면 1, 같으면 0, 싸면 -1)")
+        val riseOrFall: Boolean,
         @ApiModelProperty("가격변동")
         val diff: Int
 )

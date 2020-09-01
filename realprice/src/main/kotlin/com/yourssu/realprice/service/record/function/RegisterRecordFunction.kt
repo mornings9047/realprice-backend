@@ -1,10 +1,10 @@
-package com.yourssu.realprice.service.function
+package com.yourssu.realprice.service.record.function
 
 import com.yourssu.realprice.model.Product
 import com.yourssu.realprice.model.Record
 import com.yourssu.realprice.model.URLBuilder
 import com.yourssu.realprice.repository.RecordRepository
-import com.yourssu.realprice.service.ProductService
+import com.yourssu.realprice.service.product.ProductService
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser

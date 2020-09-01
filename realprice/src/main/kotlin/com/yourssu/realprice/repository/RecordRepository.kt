@@ -12,4 +12,5 @@ interface RecordRepository : JpaRepository<Record, Long> {
     fun findTop7ByProductIdOrderByDateDesc(productId: Long): List<Record>
     fun findTop31ByProductIdOrderByDateDesc(productId: Long): List<Record>
     fun findTop1ByProductIdOrderByDateDesc(productId: Long): Optional<Record>
+    fun findTop2ByKindnameContainingOrderByDateDesc(name: String): List<Record>
 }
