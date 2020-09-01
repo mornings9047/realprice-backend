@@ -40,8 +40,8 @@ class RecordService @Autowired constructor(val registerRecordFunction: RegisterR
         }
     }
 
-    fun findRecentRecords(name: String): List<Record> {
-        return recordRepository.findTop2ByKindnameContainingOrderByDateDesc(name)
+    fun findRecentRecords(productId: Long): List<Record> {
+        return recordRepository.findTop2ByProductIdOrderByDateDesc(productId)
     }
 
     fun getTodayRecordCompareWithYesterday(keyword: String): TodayRecordResponseDto {

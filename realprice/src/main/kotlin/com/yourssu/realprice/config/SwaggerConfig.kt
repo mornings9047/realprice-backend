@@ -28,7 +28,7 @@ class SwaggerConfig : WebMvcConfigurationSupport() {
                 .groupName("Real-Price")
                 .apiInfo(this.apiInfo())
                 .select()
-                .paths(PathSelectors.ant("/record/**"))
+                .paths(PathSelectors.any())
                 .apis(RequestHandlerSelectors.basePackage("com.yourssu.realprice.controller"))
                 .build()
     }

@@ -11,7 +11,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/search")
 class SearchController @Autowired constructor(val productService: ProductService) {
-    @GetMapping("{category}")
+    @GetMapping("/{keyword}")
+    fun getProductsByCategory(@PathVariable keyword: String): List<String> {
+        return productService.findProductsByKeyword(keyword)
+    }
+
+    @GetMapping("/category/{category}")
     fun getProductsByCategory(@PathVariable category: Int): List<CategoryResponseDto> {
         return productService.findProductsByCategory(category)
     }
